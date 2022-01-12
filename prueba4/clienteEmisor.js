@@ -1,17 +1,14 @@
-// Cuando un cliente envía trabajos asíncronamente hay dos maneras
-// de recibir la respuesta:
-// 1. Mediante un callback, que se ejecuta cuando la respuesta está lista
-// 2. Síncronamente en el código en el momento que se requiera
-
-// La primera opción es muy cómoda, mientras no suponga el "callback hell"
-// en la aplicación que se está tratando. Sin embargo, la segunda se ajusta
-// de mejor manera al ejercicio que se pide
+// El cliente emisor pone los trabajos en la cola, y publica
+// las keys de los trabajos por un canal, para que el cliente receptor
+// rescate las respuestas de la cola
 
 
 // Require cola de trabajos y la librería de asserts
 const { ColaDeTrabajos, esperar } = require('../ColaDeTrabajos');
 const assert = require( "assert" );
-const { argv } = require('process');
+const zmq = require('zeromq');
+const { resolve } = require('path');
+const { rejects } = require('assert');
 
 // Esta URL hay que cambiarla si no trabajamos en local
 const NATS_URL =  "localhost:4222";
@@ -26,20 +23,38 @@ const callback = (err, respuesta) => {
     console.log(respuesta);
 }
 
+const iniciarSocket = () => {
+    return new Promise((resolve, rejects) => {
+        const publicador = zmq.socket('pub');
+        publicador.bind(`tcp://*:8888`, (err) => {
+            if (!err){
+                console.log(`Publicando tickets de trabajos en el puerto 8888`);
+                resolve(publicador);
+            } else{
+                console.log(err);
+                rejects(err);
+            }
+        });
+    });
+}
+
 const main = async () => {
     // Identificamos al cliente con un nombre
-    nombre = argv[2] || "Cliente Random";
+    nombre = "clienteEmisor";
 
     // Iniciamos cliente
     const cliente = await new ColaDeTrabajos(NATS_URL,
                     { worker: false,
                       nombreCliente: `${nombre}`});
     
+    // Socket zmq para enviar los tickets
+    const publicador = await iniciarSocket();
 
     
     // Para matar desconectarse de la cola y salir
     process.on('SIGINT', async () => {
         await cliente.cerrar();
+        publicador.close();
     });
 
     // Envío de trabajos
@@ -54,19 +69,9 @@ const main = async () => {
             }
         );
         console.log(`Ticket para recoger Trabajo${i}: ${tickets[i]}`);
-    }
-
-    
-    console.log("Esperando 20 segundos para recoger las respuestas...");
-    await esperar(20000);
-
-    // Recogida de respuestas
-    let respuestas = [];
-    for (let i=1; i < tickets.length; i++){
-        console.log(`\nRecogiendo respuesta de Trabajo${i}...`);
-        respuestas[i] = await cliente.pedirRespuesta(tickets[i], 30000);
-        console.log("La respuesta es:");
-        console.log(respuestas[i]);
+        console.log(`Publicándolo para que el compi recoja las respuestas...`);
+        publicador.send(tickets[i]);
+        await esperar(2000);
     }
 
     // Se acabo el programa

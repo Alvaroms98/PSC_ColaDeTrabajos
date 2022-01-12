@@ -8,21 +8,28 @@ help:
 	@echo
 	@echo "make natsdown (tumba NATS)"
 	@echo
-	@echo "make cliente <nombre>"
+	@echo "make clienteEmisor"
+	@echo
+	@echo "make clienteReceptor"
 	@echo
 	@echo "make worker"
 	@echo
+	@echo "make clean"
+	@echo
 
 all: natsup
-	gnome-terminal -e "node cliente.js Cliente1"
-	gnome-terminal -e "node cliente.js Cliente2"
+	gnome-terminal -e "node clienteReceptor.js"
+	gnome-terminal -e "node clienteEmisor.js"
 
 	gnome-terminal -e "node worker.js"
 	gnome-terminal -e "node worker.js"
 	gnome-terminal -e "node worker.js"
 
-cliente:
-	gnome-terminal -e "node cliente.js"
+clienteEmisor:
+	gnome-terminal -e "node clienteEmisor.js"
+
+clienteReceptor:
+	gnome-terminal -e "node clienteReceptor.js"
 
 worker:
 	gnome-terminal -e "node worker.js"

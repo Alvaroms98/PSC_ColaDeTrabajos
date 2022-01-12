@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "nats": "^2.4.0"
+    "nats": "^2.4.0",
+    "zeromq": "^5.2.8"
   }
 }
