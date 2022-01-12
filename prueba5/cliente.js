@@ -1,11 +1,4 @@
-// Cuando un cliente envía trabajos asíncronamente hay dos maneras
-// de recibir la respuesta:
-// 1. Mediante un callback, que se ejecuta cuando la respuesta está lista
-// 2. Síncronamente en el código en el momento que se requiera
-
-// La primera opción es muy cómoda, mientras no suponga el "callback hell"
-// en la aplicación que se está tratando. Sin embargo, la segunda se ajusta
-// de mejor manera al ejercicio que se pide
+// Este cliente solo envía un trabajo y se espera a la respuesta
 
 
 // Require cola de trabajos y la librería de asserts
@@ -44,7 +37,7 @@ const main = async () => {
 
     // Envío de trabajos
     let tickets = [];
-    for (let i=1; i <= 5; i++){
+    for (let i=1; i <= 1; i++){
         // Enviar trabajo y esperar respuesta síncronamente
         console.log(`\nEnviando Trabajo${i}...`);
         tickets[i] = await cliente.anyadirTrabajo(

@@ -10,7 +10,7 @@ const NATS_URL =  "localhost:4222";
 
 const main = async () => {
     // Identificamos al cliente con un nombre
-    nombre = argv[2] || "Cliente Random";
+    nombre = argv[2] || "ClienteRandom";
 
     // Iniciamos cliente
     const cliente = await new ColaDeTrabajos(NATS_URL,

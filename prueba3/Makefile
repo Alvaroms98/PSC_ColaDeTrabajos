@@ -12,6 +12,8 @@ help:
 	@echo
 	@echo "make worker"
 	@echo
+	@echo "make clean"
+	@echo
 
 all: natsup
 	gnome-terminal -e "node cliente.js Cliente1"

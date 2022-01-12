@@ -2,7 +2,7 @@ NATS_NAME=natssrv
 
 help:
 	@echo
-	@echo "make all (ejecuta prueba 3)"
+	@echo "make all (ejecuta prueba 4)"
 	@echo
 	@echo "make natsup (levanta NATS)"
 	@echo
