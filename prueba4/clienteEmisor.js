@@ -7,8 +7,6 @@
 const { ColaDeTrabajos, esperar } = require('../ColaDeTrabajos');
 const assert = require( "assert" );
 const zmq = require('zeromq');
-const { resolve } = require('path');
-const { rejects } = require('assert');
 
 // Esta URL hay que cambiarla si no trabajamos en local
 const NATS_URL =  "localhost:4222";
@@ -24,7 +22,7 @@ const callback = (err, respuesta) => {
 }
 
 const iniciarSocket = () => {
-    return new Promise((resolve, rejects) => {
+    return new Promise((resolve, reject) => {
         const publicador = zmq.socket('pub');
         publicador.bind(`tcp://*:8888`, (err) => {
             if (!err){
@@ -32,7 +30,7 @@ const iniciarSocket = () => {
                 resolve(publicador);
             } else{
                 console.log(err);
-                rejects(err);
+                reject(err);
             }
         });
     });
