@@ -205,22 +205,7 @@ class ColaDeTrabajos {
 
 		try {
 
-
-			//
-			//
-			// Si queremos que los worker reciban todos los mismos trabajos
-			// pero que de todas las respuestas solo se quede con una hay que 
-			// darle un "DurableName" distinto. De este modo todos los workers
-			// recibien todos los trabajos. Pero, marcando las respuestas con el 
-			// MsgID del trabajo, nats solo permitirá una única respuesta
-			//
-			//
-
-			const si = await this.jsManager.streams.info("colaDeTrabajos")
-			//console.log(si.state.consumer_count);
-
-
-			this.workerDurableName = "WORKER" + si.state.consumer_count;
+			this.workerDurableName = "WORKER"
 
 			// pull subscription : pediremos mensaje con pull
 			this.suscripcionWorker = await this.jsClient.pullSubscribe(
@@ -539,14 +524,6 @@ class ColaDeTrabajos {
 				// Había una respuesta: la devuelvo
 				//
 				m.ack();
-
-				// No se puede purgar por tiempo, pero se puede eliminar las
-				// Respuestas recibidas
-
-				//console.log("*** SEQ de la respuesta leída a eliminar: " + m.seq);
-				//await this.jsManager.streams.deleteMessage(this.datosStream.name, m.seq);
-				//console.log("*** Respuesta eliminada ***");
-
 				return JSON.parse( codificador.decode( m.data ) )
 			} // for await
 
@@ -839,11 +816,9 @@ class ColaDeTrabajos {
 
 			// No se puede eliminar trabajo por antiguedad (falta desarrollo del API)
 			// Pero se pueden eliminar los mensajes respondidos
-
-			//console.log("*** SEQ del trabajo respondido a eliminar: " + trabajo.mensajeOriginal.di.streamSequence);
-			//await this.jsManager.streams.deleteMessage(this.datosStream.name, trabajo.mensajeOriginal.di.streamSequence);
-			//console.log("*** Trabajo eliminado ***");
-
+			console.log("*** SEQ del trabajo respondido a eliminar: " + trabajo.mensajeOriginal.di.streamSequence);
+			await this.jsManager.streams.deleteMessage(this.datosStream.name, trabajo.mensajeOriginal.di.streamSequence);
+			console.log("*** Trabajo eliminado ***");
 		} catch( error ) {
 			debug( error )
 			throw "responderATrabajo(): " + error 

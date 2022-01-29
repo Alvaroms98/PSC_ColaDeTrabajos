@@ -1,5 +1,5 @@
 // Require cola de trabajos y la librería de asserts
-const { ColaDeTrabajos, esperar } = require('./ColaDeTrabajos_6');
+const { ColaDeTrabajos, esperar } = require('./ColaDeTrabajos_8');
 const assert = require( "assert" );
 
 // Esta URL hay que cambiarla si no trabajamos en local

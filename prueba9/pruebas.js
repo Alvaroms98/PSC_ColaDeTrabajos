@@ -1,5 +1,5 @@
 // Require cola de trabajos y la librería de asserts
-const { ColaDeTrabajos, esperar } = require('./ColaDeTrabajos_6');
+const { ColaDeTrabajos, esperar } = require('./ColaDeTrabajos_9');
 const assert = require( "assert" );
 const { argv, mainModule, setMaxListeners } = require('process');
 const { ClientRequest } = require('http');
